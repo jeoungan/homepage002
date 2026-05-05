@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choice RT Task</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    <!-- 참가자 ID 입력 화면 -->
+    <div id="id-screen" class="screen active">
+        <div class="glass-card">
+            <h1>Choice RT Task</h1>
+            <p class="subtitle">선택 반응시간 과제</p>
+            <div style="font-size: 0.85rem; color: #ddd; margin-bottom: 25px; line-height: 1.6; text-align: justify; background: rgba(0,0,0,0.25); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                본 실험의 설계자는 화성의과학대학교의 익명 학생이며, 이 실험은 choise RT 실험 시 Hick's law(힉의 법칙)을 증명하기 위해 만들어졌습니다.<br><br>
+                본 실험의 데이터는 '인지실험과 설계' 수업에서만 사용될 것이며, 이 데이터를 상업적, 법률적으로 사용하지 않겠습니다.
+            </div>
+            <div class="input-group">
+                <label for="participant-id">참가자 ID</label>
+                <input type="text" id="participant-id" placeholder="ID를 입력하세요" autofocus>
+            </div>
+            <div class="input-group">
+                <label for="level-select">진행할 레벨</label>
+                <select id="level-select" class="styled-select">
+                    <option value="1">레벨 1 (방향 1개)</option>
+                    <option value="2">레벨 2 (방향 2개)</option>
+                    <option value="3">레벨 3 (방향 3개)</option>
+                    <option value="4">레벨 4 (방향 4개)</option>
+                </select>
+            </div>
+            <button id="start-btn" class="btn-primary">시작하기</button>
+        </div>
+    </div>
+
+    <!-- 블록 안내 화면 -->
+    <div id="instruction-screen" class="screen">
+        <div class="glass-card instruction-card">
+            <h2 id="instruction-title">블록 1 안내</h2>
+            <div id="instruction-body" class="instruction-content"></div>
+            <button id="practice-btn" class="btn-primary">연습 시작</button>
+        </div>
+    </div>
+
+    <!-- 실험 화면 -->
+    <div id="experiment-screen" class="screen">
+        <div class="trial-info">
+            <span id="block-label" class="block-badge">블록 1</span>
+            <span id="phase-label" class="phase-badge">연습</span>
+            <span id="trial-counter">1 / 5</span>
+        </div>
+        <!-- 하얀 배경 박스 -->
+        <div class="stimulus-box">
+            <div id="fixation" class="stimulus-area">
+                <span class="fixation-cross">+</span>
+            </div>
+            <div id="stimulus" class="stimulus-area" style="display:none;">
+                <div id="stimulus-icon" class="stimulus-icon"></div>
+            </div>
+            <div id="feedback" class="stimulus-area" style="display:none;">
+                <span id="feedback-text" class="feedback-text"></span>
+            </div>
+            <div id="blank" class="stimulus-area" style="display:none;"></div>
+        </div>
+        
+        <!-- 모바일 터치 패드 -->
+        <div id="mobile-controls" class="mobile-controls" style="display:none;"></div>
+    </div>
+
+    <!-- 연습 종료 화면 -->
+    <div id="practice-end-screen" class="screen">
+        <div class="glass-card">
+            <h2>연습 완료! 🎉</h2>
+            <p id="practice-end-msg">연습 시행이 끝났습니다.</p>
+            <p>이제 본 시행을 시작합니다.</p>
+            <p class="tip">💡 최대한 빨리, 하지만 정확하게 반응하세요.</p>
+            <button id="main-btn" class="btn-primary">본 시행 시작</button>
+        </div>
+    </div>
+
+    <!-- 블록 종료 화면 -->
+    <div id="block-end-screen" class="screen">
+        <div class="glass-card">
+            <h2>블록 완료! ✅</h2>
+            <p id="block-end-msg">본 시행이 완료되었습니다.</p>
+            <p class="tip">💡 잠시 쉬었다가 다음 블록을 진행하세요.</p>
+            <button id="next-block-btn" class="btn-primary">다음 블록 시작</button>
+        </div>
+    </div>
+
+    <!-- 결과 화면 -->
+    <div id="result-screen" class="screen">
+        <div class="glass-panel">
+            <h2 class="glow-text">수고하셨습니다</h2>
+            <div id="result-summary" class="result-grid"></div>
+            <div class="chart-container">
+                <canvas id="rt-chart"></canvas>
+            </div>
+            <div class="result-actions">
+                <button id="excel-btn" class="btn-secondary">결과 보내기</button>
+                <button id="retry-btn" class="btn-secondary">다시 하기</button>
+                <button id="next-level-btn" class="btn-primary">다음 레벨</button>
+            </div>
+            <p style="margin-top: 20px; font-size: 0.95rem; color: #ffeb6b; text-align: center; line-height: 1.5;">
+                귀하의 노고에 감사드리며,<br><b>결과 보내기</b> 버튼을 꼭 눌러주시기 바랍니다.
+            </p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple RT Task</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    <!-- 참가자 ID 입력 화면 -->
+    <div id="id-screen" class="screen active">
+        <div class="glass-card">
+            <h1>Simple RT Task</h1>
+            <p class="subtitle">단순 반응시간 과제</p>
+            <div class="input-group">
+                <label for="participant-id">참가자 ID</label>
+                <input type="text" id="participant-id" placeholder="ID를 입력하세요" autofocus>
+            </div>
+            <button id="start-btn" class="btn-primary">시작하기</button>
+        </div>
+    </div>
+
+    <!-- 안내 화면 -->
+    <div id="instruction-screen" class="screen">
+        <div class="glass-card instruction-card">
+            <h2>실험 안내</h2>
+            <div class="instruction-content">
+                <div class="instruction-step">
+                    <div class="step-icon">👁️</div>
+                    <p>화면 중앙의 <strong>+</strong> 표시에 시선을 고정하세요.</p>
+                </div>
+                <div class="instruction-step">
+                    <div class="step-icon">🔴</div>
+                    <p>빨간 원이 나타나면 <strong>최대한 빨리</strong> <kbd>스페이스바</kbd>를 누르세요.</p>
+                </div>
+                <div class="instruction-step">
+                    <div class="step-icon">⚡</div>
+                    <p>자극이 나타나기 <strong>전에</strong> 누르면 오반응으로 처리됩니다.</p>
+                </div>
+                <div class="instruction-step">
+                    <div class="step-icon">📊</div>
+                    <p>연습 시행 <strong>5회</strong> 후 본 시행 <strong>20회</strong>를 진행합니다.</p>
+                </div>
+            </div>
+            <button id="practice-btn" class="btn-primary">연습 시작</button>
+        </div>
+    </div>
+
+    <!-- 실험 화면 -->
+    <div id="experiment-screen" class="screen">
+        <div class="trial-info">
+            <span id="phase-label" class="phase-badge">연습</span>
+            <span id="trial-counter">1 / 5</span>
+        </div>
+        <div id="fixation" class="stimulus-area">
+            <span class="fixation-cross">+</span>
+        </div>
+        <div id="stimulus" class="stimulus-area" style="display:none;">
+            <div class="red-circle"></div>
+        </div>
+        <div id="feedback" class="stimulus-area" style="display:none;">
+            <span id="feedback-text" class="feedback-text"></span>
+        </div>
+        <div id="blank" class="stimulus-area" style="display:none;"></div>
+    </div>
+
+    <!-- 연습 종료 화면 -->
+    <div id="practice-end-screen" class="screen">
+        <div class="glass-card">
+            <h2>연습 완료! 🎉</h2>
+            <p>연습 시행이 끝났습니다.</p>
+            <p>이제 본 시행을 시작합니다.</p>
+            <p class="tip">💡 최대한 빨리, 하지만 정확하게 반응하세요.</p>
+            <button id="main-btn" class="btn-primary">본 시행 시작</button>
+        </div>
+    </div>
+
+    <!-- 결과 화면 -->
+    <div id="result-screen" class="screen">
+        <div class="glass-card result-card">
+            <h2>실험 완료! 📊</h2>
+            <div id="result-summary" class="result-summary"></div>
+            <div class="chart-container">
+                <canvas id="rt-chart"></canvas>
+            </div>
+            <div class="result-actions">
+                <button id="excel-btn" class="btn-secondary">엑셀 다운로드</button>
+                <button id="retry-btn" class="btn-primary">다시 하기</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

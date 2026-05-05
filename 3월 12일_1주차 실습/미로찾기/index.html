@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>미로 찾기 게임</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1>미로 찾기 게임</h1>
+        <div id="maze-container">
+            <canvas id="mazeCanvas"></canvas>
+        </div>
+        <div class="controls">
+            <p>방향키(⬅️, ⬆️, ⬇️, ➡️)를 사용하여 목적지(초록색)까지 이동하세요!</p>
+            <button id="restartBtn">새 미로 생성</button>
+        </div>
+    </div>
+    <script src="maze.js"></script>
+</body>
+</html>

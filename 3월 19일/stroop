@@ -1,0 +1,63 @@
+﻿const SPREADSHEET_ID = '1Kc99aGBC0D8chkj25gcghCTC_U5zKX6gPMAxqcrcGjw'; // 제공해주신 스프레드시트 ID
+
+function doPost(e) {
+  try {
+    // 1. 스프레드시트 열기 (ID를 통해 직접 접근)
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    // 첫 번째 시트를 사용하거나 이름이 있다면 getSheetByName을 사용할 수 있습니다.
+    const sheet = ss.getSheets()[0]; 
+    
+    // 2. 시트가 비어있다면 헤더(첫 줄) 추가
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow([
+        "Timestamp",
+        "Participant ID",
+        "Phase",
+        "Trial",
+        "Word (KR)",
+        "Word (EN)",
+        "Language",
+        "Congruency",
+        "Ink Color",
+        "Response Color",
+        "Correct (1=Yes, 0=No)",
+        "RT (ms)"
+      ]);
+      // 헤더 굵게 표시
+      sheet.getRange(1, 1, 1, 12).setFontWeight("bold");
+    }
+    
+    // 3. 넘어온 JSON 데이터 파싱
+    // script.js 에서 payload 변수가 배열(Array) 형태로 전송됨
+    const dataArray = JSON.parse(e.postData.contents);
+    const timestamp = new Date(); // 현재 시간
+    
+    // 4. 배열을 순회하며 시트에 한 줄씩 데이터 추가
+    dataArray.forEach(function(row) {
+      sheet.appendRow([
+        timestamp,
+        row.participant,
+        row.phase,
+        row.trial,
+        row.wordKr,
+        row.wordEn,
+        row.language,
+        row.congruency,
+        row.inkColor,
+        row.responseColor,
+        row.correct,
+        row.rt
+      ]);
+    });
+    
+    // 5. 클라이언트로 성공 응답 보내기
+    return ContentService.createTextOutput(JSON.stringify({"status": "success", "message": "데이터 저장 완료"}))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    // 에러 발생 시 클라이언트로 에러 응답 보내기
+    return ContentService.createTextOutput(JSON.stringify({"status": "error", "message": error.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+

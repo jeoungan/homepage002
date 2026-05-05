@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stroop 인지 실험</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <div class="background-blobs">
+            <div class="blob red"></div>
+            <div class="blob blue"></div>
+            <div class="blob green"></div>
+            <div class="blob yellow"></div>
+        </div>
+        
+        <div id="container" class="glass-panel">
+            <!-- Start Screen -->
+            <div id="start-screen" class="screen active">
+                <div class="icon-container">🧠</div>
+                <h1>스트룹(Stroop) 인지 실험</h1>
+                <p class="subtitle">단어의 의미가 아닌 <strong>글자의 색상</strong>을 최대한 빠르고 정확하게 선택하세요.</p>
+                
+                <div class="example-box glass-panel-inner">
+                    <h3>시뮬레이션 예시</h3>
+                    <div class="example-content">
+                        <span class="word-example" style="color: #FF4B4B;">파랑</span>
+                        <span class="arrow">➡️</span>
+                        <span class="answer-example"><span class="highlight red-bg">빨강</span> 선택!</span>
+                    </div>
+                </div>
+
+                <div class="info-badges">
+                    <span class="badge practice">연습: 5회</span>
+                    <span class="badge main">본 실험: 20회</span>
+                </div>
+                
+                <div class="participant-input glass-panel-inner" style="margin-bottom: 20px; width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 8px;">
+                    <label for="participant-id" style="font-size: 0.9rem; color: #9CA3AF; text-align: left;">참가자 ID (필수)</label>
+                    <input type="text" id="participant-id" placeholder="예: st01" style="padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); background: rgba(0,0,0,0.3); color: white; font-size: 1.1rem; outline: none;">
+                </div>
+
+                <button id="start-btn" class="primary-btn pulse-anim">실험 시작하기</button>
+                <p class="hint-text">키보드(1, 2, 3, 4) 또는 마우스를 사용할 수 있습니다.</p>
+            </div>
+
+            <!-- Experiment Screen -->
+            <div id="experiment-screen" class="screen">
+                <div class="header">
+                    <div id="phase-indicator" class="phase-badge practice-mode">연습 라운드</div>
+                    <div class="progress-wrapper">
+                        <div class="progress-bar-bg">
+                            <div id="progress-bar" class="progress-fill"></div>
+                        </div>
+                        <div id="trial-counter" class="counter-text">1 / 5</div>
+                    </div>
+                </div>
+
+                <div class="stimulus-area">
+                    <div id="fixation" class="stimulus visible">+</div>
+                    <div id="word" class="stimulus hidden">빨강</div>
+                    <div id="feedback" class="feedback-msg hidden">정답!</div>
+                </div>
+
+                <div class="controls">
+                    <button class="color-btn btn-red" data-color="red" data-key="1">
+                        <span class="color-name">빨강</span>
+                        <span class="key-hint">1</span>
+                    </button>
+                    <button class="color-btn btn-blue" data-color="blue" data-key="2">
+                        <span class="color-name">파랑</span>
+                        <span class="key-hint">2</span>
+                    </button>
+                    <button class="color-btn btn-green" data-color="green" data-key="3">
+                        <span class="color-name">초록</span>
+                        <span class="key-hint">3</span>
+                    </button>
+                    <button class="color-btn btn-yellow" data-color="yellow" data-key="4">
+                        <span class="color-name">노랑</span>
+                        <span class="key-hint">4</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Interstitial Screen (Between Practice and Main) -->
+            <div id="interstitial-screen" class="screen">
+                <div class="icon-container">🚀</div>
+                <h1>연습 종료</h1>
+                <p class="subtitle">이제부터 본 실험 (20회)이 시작됩니다.</p>
+                <div class="warning-box glass-panel-inner">
+                    <p>본 실험에서도 정답/오답 <strong>피드백이 제공됩니다</strong>.</p>
+                    <p>최대한 빠르고 정확하게 반응해 주세요.</p>
+                </div>
+                <button id="start-main-btn" class="primary-btn">본 실험 시작</button>
+            </div>
+
+            <!-- End Screen -->
+            <div id="end-screen" class="screen">
+                <div class="icon-container">📊</div>
+                <h1>실험 완료</h1>
+                <p class="subtitle">모든 과정이 마무리되었습니다. 수고하셨습니다!</p>
+                
+                <div class="results-grid">
+                    <div class="result-card glass-panel-inner">
+                        <div class="result-label">전체 정확도</div>
+                        <div id="total-acc" class="result-value highlight-text">0%</div>
+                    </div>
+                    <div class="result-card glass-panel-inner">
+                        <div class="result-label">평균 반응 시간</div>
+                        <div id="total-rt" class="result-value">0ms</div>
+                    </div>
+                    <div class="result-card glass-panel-inner">
+                        <div class="result-label">일치 조건 반응시간</div>
+                        <div id="congruent-rt" class="result-value">0ms</div>
+                    </div>
+                    <div class="result-card glass-panel-inner">
+                        <div class="result-label">불일치 조건 반응시간</div>
+                        <div id="incongruent-rt" class="result-value">0ms</div>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button id="download-csv-btn" class="primary-btn outline">결과 보내기</button>
+                    <button id="restart-btn" class="secondary-btn">다시 하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

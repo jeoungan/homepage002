@@ -1,0 +1,137 @@
+body {
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    background-color: #f4f6f9;
+    color: #333;
+    margin: 0;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 800px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+#progress {
+    font-weight: bold;
+    color: #555;
+}
+
+.card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+.stimulus-card {
+    height: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.15s ease;
+}
+
+.stimulus-card.error {
+    background-color: #ffebee;
+}
+
+#stimulus-word {
+    font-size: 8rem;
+    margin: 0;
+    font-weight: 900;
+}
+
+.instruction {
+    text-align: center;
+    color: #64748b;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+h3 {
+    font-size: 1rem;
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #334155;
+}
+
+.key-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.key-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.95rem;
+    color: #475569;
+}
+
+kbd {
+    background-color: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 3px 10px;
+    margin-right: 8px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 600;
+    color: #475569;
+}
+
+.pad-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.pad-btn {
+    flex: 1 1 calc(25% - 15px);
+    padding: 25px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    color: #333;
+}
+
+.pad-btn:hover {
+    opacity: 0.85;
+}
+
+.pad-btn:active {
+    transform: translateY(2px);
+}
+
+#results-container {
+    margin-top: 20px;
+}
+
+.result-stats {
+    display: flex;
+    justify-content: space-around;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}

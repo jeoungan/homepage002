@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Neon Maze</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>NEON MAZE</h1>
+            <div class="stats">
+                <div class="timer">Time: <span id="timeDisplay">0</span>s</div>
+                <div class="level">Level: <span id="levelDisplay">Ready</span></div>
+            </div>
+        </header>
+
+        <div class="game-area">
+            <canvas id="mazeCanvas"></canvas>
+            <div class="overlay" id="overlay">
+                <h2 id="overlayTitle">Are you ready?</h2>
+                <p id="overlayMessage">Find your way to the exit.</p>
+                <div class="controls-setup">
+                    <button class="btn btn-primary" onclick="startGame('easy')">Easy</button>
+                    <button class="btn btn-warning" onclick="startGame('medium')">Medium</button>
+                    <button class="btn btn-danger" onclick="startGame('hard')">Hard</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mobile-controls" id="mobileControls">
+            <div class="dpad">
+                <button class="dpad-btn up" id="btnUp">▲</button>
+                <div class="dpad-row">
+                    <button class="dpad-btn left" id="btnLeft">◀</button>
+                    <button class="dpad-btn right" id="btnRight">▶</button>
+                </div>
+                <button class="dpad-btn down" id="btnDown">▼</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

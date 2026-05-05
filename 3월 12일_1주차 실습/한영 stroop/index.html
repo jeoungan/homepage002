@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한영 Stroop Task</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Start Screen -->
+    <div id="start-screen" class="container" style="text-align: center; margin-top: 10vh;">
+        <div class="card">
+            <h1>한영 Stroop Task</h1>
+            <p style="margin-bottom: 30px; color: #64748b;">참가자 번호를 입력하고 실험을 시작하세요.</p>
+            
+            <div style="margin-bottom: 20px;">
+                <label for="participant-id" style="font-weight: bold; margin-right: 10px;">참가자 ID :</label>
+                <input type="text" id="participant-id" placeholder="예: s001" style="padding: 10px; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; width: 200px;">
+            </div>
+            
+            <button id="start-btn" class="pad-btn" style="background-color: #43a047; color: white; padding: 15px 40px; font-size: 1.2rem;">실험 시작</button>
+        </div>
+    </div>
+
+    <!-- Task Screen (Hidden Initially) -->
+    <div id="task-screen" class="container" style="display: none;">
+        <header>
+            <h2 id="phase-title">연습</h2>
+            <div id="progress">연습 0 / 8</div>
+        </header>
+
+        <div class="card stimulus-card">
+            <h1 id="stimulus-word">노랑</h1>
+        </div>
+
+        <p class="instruction">색상에 맞는 키를 누르거나 아래 패드를 터치하세요.</p>
+
+        <div class="card keys-card">
+            <h3>응답 키</h3>
+            <div class="key-list">
+                <span class="key-item"><kbd>R</kbd> 빨강</span>
+                <span class="key-item"><kbd>B</kbd> 파랑</span>
+                <span class="key-item"><kbd>G</kbd> 초록</span>
+                <span class="key-item"><kbd>Y</kbd> 노랑</span>
+                <span class="key-item"><kbd>P</kbd> 보라</span>
+                <span class="key-item"><kbd>K</kbd> 검정</span>
+                <span class="key-item"><kbd>W</kbd> 하양</span>
+            </div>
+        </div>
+
+        <div class="card pad-card">
+            <h3>색깔 패드 (마우스 / 터치)</h3>
+            <div class="pad-grid">
+                <button class="pad-btn" data-color="red" style="background-color: #ffcdd2;">빨강 R</button>
+                <button class="pad-btn" data-color="blue" style="background-color: #bbdefb;">파랑 B</button>
+                <button class="pad-btn" data-color="green" style="background-color: #c8e6c9;">초록 G</button>
+                <button class="pad-btn" data-color="yellow" style="background-color: #fff9c4;">노랑 Y</button>
+                <button class="pad-btn" data-color="purple" style="background-color: #e1bee7;">보라 P</button>
+                <button class="pad-btn" data-color="black" style="background-color: #cfd8dc;">검정 K</button>
+                <button class="pad-btn" data-color="white" style="background-color: #ffffff; border: 1px solid #bbb;">하양 W</button>
+            </div>
+        </div>
+
+        <div id="results-container" class="card" style="display: none;">
+            <h3>실험 결과</h3>
+            <div class="result-stats" style="flex-wrap: wrap;">
+                <p>평균 반응시간: <span id="avg-rt">0</span> ms</p>
+                <p>전체 오답률: <span id="error-rate">0</span> %</p>
+                <div style="width: 100%; border-top: 1px solid #ddd; margin: 10px 0;"></div>
+                <p style="width: 50%; font-size: 1rem; color: #1e88e5;">한글 (일치 조건) 정답률: <span id="kr-cong-acc">0</span> %</p>
+                <p style="width: 50%; font-size: 1rem; color: #43a047;">영어 (일치 조건) 정답률: <span id="en-cong-acc">0</span> %</p>
+            </div>
+            <div class="chart-container" style="position: relative; height:30vh; width:100%; margin-bottom: 20px;">
+                <canvas id="rtChart"></canvas>
+            </div>
+            
+            <h4>한글 vs 영어 결과 비교</h4>
+            <div class="chart-container" style="position: relative; height:30vh; width:100%">
+                <canvas id="compareChart"></canvas>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button id="save-btn" onclick="saveToGoogleSheets()" class="pad-btn" style="background-color: #43a047; color: white; font-size: 1rem; padding: 15px 30px; margin-right: 10px;">스프레드시트에 저장</button>
+                <button onclick="location.reload()" class="pad-btn" style="background-color: #e2e8f0; font-size: 1rem; padding: 15px 30px;">다시하기</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

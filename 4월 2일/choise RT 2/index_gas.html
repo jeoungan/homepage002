@@ -1,0 +1,1224 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choice RT Task</title>
+    <style>
+/* ===== Design Tokens ===== */
+:root {
+    --bg-gradient-start: #0f0c29;
+    --bg-gradient-mid: #302b63;
+    --bg-gradient-end: #24243e;
+    --glass-bg: rgba(255, 255, 255, 0.06);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --text-primary: #f0f0f5;
+    --text-secondary: #a0a0c0;
+    --accent: #ff4d6d;
+    --accent-glow: rgba(255, 77, 109, 0.4);
+    --success: #00e676;
+    --warning: #ffab40;
+    --error: #ff5252;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --radius: 16px;
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== Reset & Base ===== */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: var(--font);
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-mid), var(--bg-gradient-end));
+    color: var(--text-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ===== Screens ===== */
+.screen {
+    display: none;
+    position: absolute;
+    inset: 0;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.5s ease;
+}
+
+.screen.active {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Glass Card ===== */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    box-shadow: var(--glass-shadow);
+    padding: 48px;
+    text-align: center;
+    max-width: 520px;
+    width: 90%;
+}
+
+.glass-card h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+    background: linear-gradient(135deg, #fff, #c0c0e0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.glass-card h2 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-bottom: 32px;
+}
+
+/* ===== Input ===== */
+.input-group {
+    margin-bottom: 28px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.input-group input,
+.styled-select {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    color: var(--text-primary);
+    font-family: var(--font);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color var(--transition);
+}
+
+.styled-select {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+.styled-select option {
+    background: var(--bg-gradient-end);
+    color: var(--text-primary);
+}
+
+.input-group input:focus,
+.styled-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.input-group input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* ===== Buttons ===== */
+.btn-primary {
+    display: inline-block;
+    padding: 14px 40px;
+    background: linear-gradient(135deg, var(--accent), #c9184a);
+    color: #fff;
+    font-family: var(--font);
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition);
+    box-shadow: 0 4px 20px var(--accent-glow);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 28px var(--accent-glow);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    display: inline-block;
+    padding: 14px 40px;
+    background: transparent;
+    color: var(--text-primary);
+    font-family: var(--font);
+    font-size: 1rem;
+    font-weight: 500;
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background var(--transition);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* ===== Instruction Card ===== */
+.instruction-card {
+    max-width: 580px;
+}
+
+.instruction-content {
+    margin-bottom: 32px;
+}
+
+.instruction-step {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-align: left;
+    padding: 14px 16px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    transition: background var(--transition);
+}
+
+.instruction-step:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.step-icon {
+    font-size: 1.6rem;
+    flex-shrink: 0;
+}
+
+.instruction-step p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+.instruction-step strong {
+    color: var(--text-primary);
+}
+
+kbd {
+    display: inline-block;
+    padding: 2px 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-family: var(--font);
+}
+
+/* ===== Experiment Screen ===== */
+.trial-info {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    z-index: 10;
+}
+
+.phase-badge {
+    padding: 6px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+#trial-counter {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+
+.stimulus-box {
+    width: 300px;
+    height: 300px;
+    background: #ffffff;
+    border-radius: 20px;
+    margin: 40px auto 0;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(255, 255, 255, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.stimulus-area {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fixation-cross {
+    font-size: 5rem;
+    font-weight: 400;
+    color: #111111;
+    user-select: none;
+}
+
+/* ===== Stimulus Arrows ===== */
+.stimulus-icon {
+    font-size: 8rem;
+    font-weight: 800;
+    color: #111111;
+    animation: popIn 0.1s ease-out;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    line-height: 1;
+}
+
+.feedback-text {
+    font-size: 2rem;
+    font-weight: 700;
+}
+.feedback-text.correct { color: #2e7d32; }
+.feedback-text.miss { color: #d32f2f; }
+.feedback-text.false-start { color: #f57c00; }
+
+/* ===== Mobile Controls (On-screen keys) ===== */
+.mobile-controls {
+    position: absolute;
+    bottom: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+    /* grid will be set by JS */
+    grid-template-columns: 75px 75px 75px;
+    grid-template-rows: 75px 75px 75px;
+    gap: 10px;
+    justify-content: center;
+    z-index: 20;
+}
+
+.mobile-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%; /* 조이스틱 버튼 느낌을 위해 원형으로 변경 */
+    color: var(--text-primary);
+    font-size: 2.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.1s, transform 0.1s;
+}
+
+.mobile-btn:active {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(0.92);
+}
+
+/* 조이스틱 십자(상하좌우) 모양 배열 (가운데 비어있음) */
+.mobile-btn[data-id="up"]   { grid-column: 2; grid-row: 1; }
+.mobile-btn[data-id="left"] { grid-column: 1; grid-row: 2; }
+.mobile-btn[data-id="right"]{ grid-column: 3; grid-row: 2; }
+.mobile-btn[data-id="down"] { grid-column: 2; grid-row: 3; }
+
+.block-badge {
+    padding: 6px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--warning);
+}
+
+@keyframes popIn {
+    from { transform: scale(0.6); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+}
+
+/* ===== Feedback ===== */
+.feedback-text {
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.feedback-text.correct {
+    color: var(--success);
+}
+
+.feedback-text.false-start {
+    color: var(--error);
+}
+
+.feedback-text.too-slow {
+    color: var(--warning);
+}
+
+/* ===== Practice End ===== */
+.tip {
+    margin-top: 16px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* ===== Results ===== */
+.result-card {
+    max-width: 640px;
+    padding: 40px;
+}
+
+.result-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.stat-box {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 18px 16px;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.stat-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.stat-value.accent {
+    color: var(--accent);
+}
+
+.stat-value.success {
+    color: var(--success);
+}
+
+.chart-container {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 28px;
+    height: 240px;
+}
+
+.result-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 560px) {
+    html, body {
+        overflow-y: auto;
+        height: auto;
+        min-height: 100%;
+    }
+    
+    .screen {
+        position: relative;
+        min-height: 100vh;
+        overflow-y: auto;
+        align-items: flex-start;
+        padding: 30px 0;
+    }
+
+    #experiment-screen {
+        position: fixed;
+        align-items: center;
+        overflow: hidden;
+        padding: 0;
+    }
+
+    .glass-card {
+        padding: 32px 24px;
+        margin: auto;
+        width: 90%;
+    }
+
+    .glass-card h1 {
+        font-size: 1.8rem;
+    }
+
+    .result-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .result-actions {
+        flex-direction: column;
+    }
+
+    .btn-primary, .btn-secondary {
+        width: 100%;
+    }
+}
+
+</style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    <!-- 참가자 ID 입력 화면 -->
+    <div id="id-screen" class="screen active">
+        <div class="glass-card">
+            <h1>Choice RT Task</h1>
+            <p class="subtitle">선택 반응시간 과제</p>
+            <div style="font-size: 0.85rem; color: #ddd; margin-bottom: 25px; line-height: 1.6; text-align: justify; background: rgba(0,0,0,0.25); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                본 실험의 설계자는 화성의과학대학교의 익명 학생이며, 이 실험은 choise RT 실험 시 Hick's law(힉의 법칙)을 증명하기 위해 만들어졌습니다.<br><br>
+                본 실험의 데이터는 '인지실험과 설계' 수업에서만 사용될 것이며, 이 데이터를 상업적, 법률적으로 사용하지 않겠습니다.
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.2);">
+                    <span id="consent-status-text" style="color: var(--error); font-size: 0.85rem; font-weight: 600;">동의가 필요합니다.</span>
+                    <button id="open-consent-btn" type="button" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 500; transition: background 0.2s;">자세히 보기</button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="participant-id">참가자 ID</label>
+                <input type="text" id="participant-id" placeholder="ID를 입력하세요" autofocus>
+            </div>
+            <div class="input-group">
+                <label for="level-select">진행할 레벨</label>
+                <select id="level-select" class="styled-select">
+                    <option value="1">레벨 1 (방향 1개)</option>
+                    <option value="2">레벨 2 (방향 2개)</option>
+                    <option value="3">레벨 3 (방향 3개)</option>
+                    <option value="4">레벨 4 (방향 4개)</option>
+                </select>
+            </div>
+            <button id="start-btn" class="btn-primary">시작하기</button>
+        </div>
+    </div>
+
+    <!-- 블록 안내 화면 -->
+    <div id="instruction-screen" class="screen">
+        <div class="glass-card instruction-card">
+            <h2 id="instruction-title">블록 1 안내</h2>
+            <div id="instruction-body" class="instruction-content"></div>
+            <button id="practice-btn" class="btn-primary">연습 시작</button>
+        </div>
+    </div>
+
+    <!-- 실험 화면 -->
+    <div id="experiment-screen" class="screen">
+        <div class="trial-info">
+            <span id="block-label" class="block-badge">블록 1</span>
+            <span id="phase-label" class="phase-badge">연습</span>
+            <span id="trial-counter">1 / 5</span>
+        </div>
+        <!-- 하얀 배경 박스 -->
+        <div class="stimulus-box">
+            <div id="fixation" class="stimulus-area">
+                <span class="fixation-cross">+</span>
+            </div>
+            <div id="stimulus" class="stimulus-area" style="display:none;">
+                <div id="stimulus-icon" class="stimulus-icon"></div>
+            </div>
+            <div id="feedback" class="stimulus-area" style="display:none;">
+                <span id="feedback-text" class="feedback-text"></span>
+            </div>
+            <div id="blank" class="stimulus-area" style="display:none;"></div>
+        </div>
+        
+        <!-- 모바일 터치 패드 -->
+        <div id="mobile-controls" class="mobile-controls" style="display:none;"></div>
+    </div>
+
+    <!-- 연습 종료 화면 -->
+    <div id="practice-end-screen" class="screen">
+        <div class="glass-card">
+            <h2>연습 완료! 🎉</h2>
+            <p id="practice-end-msg">연습 시행이 끝났습니다.</p>
+            <p>이제 본 시행을 시작합니다.</p>
+            <p class="tip">💡 최대한 빨리, 하지만 정확하게 반응하세요.</p>
+            <button id="main-btn" class="btn-primary">본 시행 시작</button>
+        </div>
+    </div>
+
+    <!-- 블록 종료 화면 -->
+    <div id="block-end-screen" class="screen">
+        <div class="glass-card">
+            <h2>블록 완료! ✅</h2>
+            <p id="block-end-msg">본 시행이 완료되었습니다.</p>
+            <p class="tip">💡 잠시 쉬었다가 다음 블록을 진행하세요.</p>
+            <button id="next-block-btn" class="btn-primary">다음 블록 시작</button>
+        </div>
+    </div>
+
+    <!-- 결과 화면 -->
+    <div id="result-screen" class="screen">
+        <div class="glass-card">
+            <h2 class="glow-text">수고하셨습니다</h2>
+            <div id="result-summary" class="result-grid"></div>
+            <div class="chart-container">
+                <canvas id="rt-chart"></canvas>
+            </div>
+            <div class="result-actions">
+                <button id="retry-btn" class="btn-secondary">다시 하기</button>
+                <button id="next-level-btn" class="btn-primary">결과 보내고 다음 레벨가기</button>
+            </div>
+            <p id="gas-notice" style="margin-top: 20px; font-size: 0.95rem; color: #ffeb6b; text-align: center; line-height: 1.5;">
+                귀하의 노고에 감사드리며,<br><b>결과 전송</b>을 진행한 후 다음 레벨로 넘어갑니다.
+            </p>
+        </div>
+    </div>
+
+    <!-- 연구 동의서 모달 -->
+    <div id="consent-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; padding: 20px;">
+        <div class="glass-card" style="max-height: 90vh; overflow-y: auto; text-align: left; width: 100%; max-width: 500px; padding: 40px 30px;">
+            <h2 style="text-align: center; margin-bottom: 24px; font-size: 1.3rem;">연구 참여 동의서</h2>
+            <div style="font-size: 0.95rem; line-height: 1.6; color: var(--text-primary);">
+                <ol style="padding-left: 20px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
+                    <li>나는 실험 설계자로부터 연구 및 실험 참여에 관한 충분한 설명을 듣고 의논하였습니다. 이후 궁금한 사항이 있을 경우 언제라도 실험 설계자에게 문의할 수 있음을 고지 받았습니다.</li>
+                    <li>나는 본 실험에 동의한 경우라도 어떠한 손해도 없이 언제라도 참여를 중단할 수 있음을 충분히 고지 받았습니다.</li>
+                    <li>본 실험의 실험진행의 윤리적 측면이나 연구대상자로서 권리에 대한 질문이 있으시면 화성의과학대학교 의생명과학과 익명 연구자으로 연락주시길 바랍니다.</li>
+                    <li>마지막으로 나는 위의 3개의 내용을 충분히 숙지하였으며, 이 실험에 참여하겠습니다.</li>
+                </ol>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 25px; padding: 15px; background: rgba(255,255,255,0.08); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                <input type="checkbox" id="modal-consent-checkbox" style="width: 22px; height: 22px; cursor: pointer; accent-color: var(--accent);">
+                <label for="modal-consent-checkbox" style="cursor: pointer; font-weight: 500; font-size: 0.95rem; margin-bottom: 0;">위 내용에 동의합니다.</label>
+            </div>
+            <div style="display: flex; justify-content: center;">
+                <button id="close-modal-btn" class="btn-primary" style="width: 100%;">확인 및 닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+/**
+ * Choice RT (Reaction Time) Task
+ * 선택 반응시간 과제 (4블록)
+ */
+
+// ─── Device Detection ────────────────────────────────────────────
+function detectDevice() {
+    const ua = navigator.userAgent;
+    if (/Mobi|Android/i.test(ua)) return 'mobile';
+    if (/Tablet|iPad/i.test(ua)) return 'tablet';
+    return 'desktop';
+}
+const DEVICE = detectDevice();
+const isMobileTouch = DEVICE !== 'desktop' || ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+
+// ─── Configuration ───────────────────────────────────────────────
+const CONFIG = {
+    practiceTotalTrials: 5,
+    mainTotalTrials: 40,
+    fixationDurationRange: [500, 1500],
+    maxResponseTime: 1500,
+    feedbackDuration: 800,
+    interTrialInterval: 500,
+};
+
+const BLOCKS = [
+    {
+        id: 1,
+        name: '블록 1',
+        description: '자극: 왼쪽 화살표 (1개)<br>반응: <kbd>←</kbd> 또는 <kbd>A</kbd>',
+        stimuli: [
+            { id: 'left', name: '왼쪽 화살표', keys: ['ArrowLeft', 'KeyA'], keyLabel: '←(A)', icon: '←' }
+        ]
+    },
+    {
+        id: 2,
+        name: '블록 2',
+        description: '자극: 2개<br>왼쪽 화살표 → <kbd>←</kbd> (A)<br>오른쪽 화살표 → <kbd>→</kbd> (D)',
+        stimuli: [
+            { id: 'left', name: '왼쪽 화살표', keys: ['ArrowLeft', 'KeyA'], keyLabel: '←(A)', icon: '←' },
+            { id: 'right', name: '오른쪽 화살표', keys: ['ArrowRight', 'KeyD'], keyLabel: '→(D)', icon: '→' }
+        ]
+    },
+    {
+        id: 3,
+        name: '블록 3',
+        description: '자극: 3개<br>왼쪽 → <kbd>←</kbd> (A)<br>오른쪽 → <kbd>→</kbd> (D)<br>위쪽 → <kbd>↑</kbd> (W)',
+        stimuli: [
+            { id: 'left', name: '왼쪽 화살표', keys: ['ArrowLeft', 'KeyA'], keyLabel: '←(A)', icon: '←' },
+            { id: 'right', name: '오른쪽 화살표', keys: ['ArrowRight', 'KeyD'], keyLabel: '→(D)', icon: '→' },
+            { id: 'up', name: '위쪽 화살표', keys: ['ArrowUp', 'KeyW'], keyLabel: '↑(W)', icon: '↑' }
+        ]
+    },
+    {
+        id: 4,
+        name: '블록 4',
+        description: '자극: 4개<br>왼쪽 → <kbd>←</kbd> (A)<br>오른쪽 → <kbd>→</kbd> (D)<br>위 → <kbd>↑</kbd> (W)<br>아래 → <kbd>↓</kbd> (S)',
+        stimuli: [
+            { id: 'left', name: '왼쪽 화살표', keys: ['ArrowLeft', 'KeyA'], keyLabel: '←(A)', icon: '←' },
+            { id: 'right', name: '오른쪽 화살표', keys: ['ArrowRight', 'KeyD'], keyLabel: '→(D)', icon: '→' },
+            { id: 'up', name: '위쪽 화살표', keys: ['ArrowUp', 'KeyW'], keyLabel: '↑(W)', icon: '↑' },
+            { id: 'down', name: '아래쪽 화살표', keys: ['ArrowDown', 'KeyS'], keyLabel: '↓(S)', icon: '↓' }
+        ]
+    }
+];
+
+// ─── State ────────────────────────────────────────────────────────
+let participantId = '';
+let currentBlockIdx = 0;
+let phase = 'practice'; // 'practice' | 'main'
+let currentTrial = 0;
+let totalTrials = CONFIG.practiceTotalTrials;
+let allResults = [];
+let mainResults = []; // 본시행 결과 전체 저장
+
+let trialSequence = [];
+let currentStimulus = null;
+let stimulusOnsetTime = 0;
+let currentPhaseState = 'idle'; // 'fixation', 'stimulus', 'feedback', 'blank'
+let awaitingResponse = false;
+let falseStart = false;
+let trialTimeout = null;
+let currentFixDur = 0;
+
+// ─── DOM References ──────────────────────────────────────────────
+const screens = {
+    id:          document.getElementById('id-screen'),
+    instruction: document.getElementById('instruction-screen'),
+    experiment:  document.getElementById('experiment-screen'),
+    practiceEnd: document.getElementById('practice-end-screen'),
+    blockEnd:    document.getElementById('block-end-screen'),
+    result:      document.getElementById('result-screen'),
+};
+
+const els = {
+    participantId:   document.getElementById('participant-id'),
+    levelSelect:     document.getElementById('level-select'),
+    startBtn:        document.getElementById('start-btn'),
+    practiceBtn:     document.getElementById('practice-btn'),
+    mainBtn:         document.getElementById('main-btn'),
+    nextBlockBtn:    document.getElementById('next-block-btn'),
+    retryBtn:        document.getElementById('retry-btn'),
+    nextLevelBtn:    document.getElementById('next-level-btn'),
+    
+    instructionTitle:document.getElementById('instruction-title'),
+    instructionBody: document.getElementById('instruction-body'),
+    
+    blockLabel:      document.getElementById('block-label'),
+    phaseLabel:      document.getElementById('phase-label'),
+    trialCounter:    document.getElementById('trial-counter'),
+    
+    fixation:        document.getElementById('fixation'),
+    stimulus:        document.getElementById('stimulus'),
+    stimulusIcon:    document.getElementById('stimulus-icon'),
+    feedback:        document.getElementById('feedback'),
+    feedbackText:    document.getElementById('feedback-text'),
+    blank:           document.getElementById('blank'),
+    mobileControls:  document.getElementById('mobile-controls'),
+    
+    resultSummary:   document.getElementById('result-summary'),
+    chart:           document.getElementById('rt-chart'),
+};
+
+// ─── Screen Management ───────────────────────────────────────────
+function showScreen(name) {
+    Object.values(screens).forEach(s => s.classList.remove('active'));
+    screens[name].classList.add('active');
+}
+
+// ─── Utility ──────────────────────────────────────────────────────
+function randInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function generateSequence(phaseType) {
+    const block = BLOCKS[currentBlockIdx];
+    const seq = [];
+    
+    if (phaseType === 'practice') {
+        for (let i = 0; i < CONFIG.practiceTotalTrials; i++) {
+            seq.push(block.stimuli[randInt(0, block.stimuli.length - 1)]);
+        }
+    } else {
+        const total = CONFIG.mainTotalTrials;
+        const stimCount = block.stimuli.length;
+        const perStim = Math.floor(total / stimCount);
+        const remainder = total % stimCount;
+        
+        // 균등하게 배분
+        block.stimuli.forEach(stim => {
+            for (let i = 0; i < perStim; i++) {
+                seq.push(stim);
+            }
+        });
+        
+        // 남은 시행은 무작위로 추가 (ex. 3블록의 경우 1개)
+        for (let i = 0; i < remainder; i++) {
+            seq.push(block.stimuli[randInt(0, stimCount - 1)]);
+        }
+        
+        // 순서 셔플 (Fisher-Yates 알고리즘)
+        for (let i = seq.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [seq[i], seq[j]] = [seq[j], seq[i]];
+        }
+    }
+    return seq;
+}
+
+function showArea(id) {
+    currentPhaseState = id;
+    ['fixation', 'stimulus', 'feedback', 'blank'].forEach(a => {
+        els[a].style.display = a === id ? 'flex' : 'none';
+    });
+}
+
+function startBlock() {
+    const block = BLOCKS[currentBlockIdx];
+    els.instructionTitle.textContent = `${block.name} 안내`;
+    
+    let instructionHtml = `<div class="instruction-step"><div class="step-icon">👁️</div><p>중앙의 <strong>+</strong> 표시에 시선을 고정하세요.</p></div>`;
+    instructionHtml += `<div class="instruction-step"><div class="step-icon">🎨</div><p>${block.description}</p></div>`;
+    instructionHtml += `<div class="instruction-step"><div class="step-icon">⚡</div><p>최대한 빠르고 정확하게 누르세요.</p></div>`;
+    
+    els.instructionBody.innerHTML = instructionHtml;
+    
+    renderMobileControls();
+    showScreen('instruction');
+}
+
+function renderMobileControls() {
+    if (!isMobileTouch) return;
+    
+    els.mobileControls.innerHTML = '';
+    const block = BLOCKS[currentBlockIdx];
+    
+    block.stimuli.forEach(stim => {
+        const btn = document.createElement('div');
+        btn.className = 'mobile-btn';
+        btn.dataset.id = stim.id;
+        btn.textContent = stim.icon;
+        
+        const interactionEvent = (e) => {
+            e.preventDefault();
+            handleInput(stim.id);
+        };
+        
+        btn.addEventListener('touchstart', interactionEvent, {passive: false});
+        btn.addEventListener('mousedown', interactionEvent);
+        
+        els.mobileControls.appendChild(btn);
+    });
+    
+    els.mobileControls.style.display = 'grid';
+}
+
+// ─── Trial Flow ──────────────────────────────────────────────────
+function startTrial() {
+    currentTrial++;
+    updateTrialInfo();
+    falseStart = false;
+    awaitingResponse = false;
+    currentStimulus = null;
+
+    showArea('fixation');
+    currentFixDur = randInt(...CONFIG.fixationDurationRange);
+
+    // 미리 생성된 시퀀스에서 이번 시행의 자극 가져오기
+    currentStimulus = trialSequence[currentTrial - 1];
+
+    trialTimeout = setTimeout(() => {
+        // 자극 표시
+        els.stimulusIcon.className = `stimulus-icon ${currentStimulus.id}`;
+        els.stimulusIcon.textContent = currentStimulus.icon;
+        showArea('stimulus');
+        stimulusOnsetTime = performance.now();
+        awaitingResponse = true;
+
+        // 최대 응답 시간 초과 처리
+        trialTimeout = setTimeout(() => {
+            if (awaitingResponse) {
+                awaitingResponse = false;
+                recordResult(CONFIG.maxResponseTime, 'too_slow', 'none', 0, currentFixDur);
+                showFeedback('너무 느립니다!', 'too-slow');
+            }
+        }, CONFIG.maxResponseTime);
+    }, currentFixDur);
+}
+
+function updateTrialInfo() {
+    els.blockLabel.textContent = `블록 ${currentBlockIdx + 1}`;
+    els.phaseLabel.textContent = phase === 'practice' ? '연습' : '본 시행';
+    els.trialCounter.textContent = `${currentTrial} / ${totalTrials}`;
+}
+
+function showFeedback(text, cls) {
+    els.feedbackText.textContent = text;
+    els.feedbackText.className = 'feedback-text ' + cls;
+    showArea('feedback');
+
+    setTimeout(() => {
+        showArea('blank');
+        setTimeout(nextTrial, CONFIG.interTrialInterval);
+    }, CONFIG.feedbackDuration);
+}
+
+function nextTrial() {
+    if (currentTrial >= totalTrials) {
+        if (phase === 'practice') {
+            showScreen('practiceEnd');
+        } else {
+            showResults();
+        }
+        return;
+    }
+    startTrial();
+}
+
+function recordResult(rt, type, response, accuracy, foreperiod) {
+    const block = BLOCKS[currentBlockIdx];
+    const row = {
+        participant_ID: participantId,
+        block: block.name,
+        phase: phase === 'practice' ? '연습' : '본 시행',
+        trial_index: currentTrial,
+        condition: `${block.stimuli.length}_Choice`,
+        stimulus: currentStimulus ? currentStimulus.icon : 'none',
+        correct_response: currentStimulus ? currentStimulus.icon : 'none',
+        participant_response: response,
+        accuracy: accuracy,
+        RT_ms: rt ?? '',
+        foreperiod_ms: foreperiod ?? '',
+        type: type,
+        device: DEVICE,
+    };
+    allResults.push(row);
+    if (phase === 'main') {
+        const globalTrial = mainResults.length + 1;
+        mainResults.push({ 
+            trial: globalTrial, 
+            block: block.name, 
+            rt: rt, 
+            type: type, 
+            accuracy: accuracy, 
+            condition: block.stimuli.length 
+        });
+    }
+}
+
+// ─── Input Handling (Keyboard & Touch) ───────────────────────────
+function handleInput(inputId) {
+    if (!screens.experiment.classList.contains('active')) return;
+    
+    // 피드백이나 시행 사이 대기(blank) 화면일 때는 클릭/키 입력을 무시하여 연타 방지
+    if (currentPhaseState === 'feedback' || currentPhaseState === 'blank') {
+        return;
+    }
+    
+    const block = BLOCKS[currentBlockIdx];
+    const allowedIds = block.stimuli.map(s => s.id);
+
+    // 화면에 +만 떠있을 때(fixation) 누르면 너무 빠르다고 판정 (false_start)
+    if (currentPhaseState === 'fixation') {
+        if (allowedIds.includes(inputId) && !falseStart) {
+            falseStart = true;
+            clearTimeout(trialTimeout);
+            const pressedStim = block.stimuli.find(s => s.id === inputId);
+            const responseLabel = pressedStim ? pressedStim.icon : inputId;
+            recordResult(null, 'false_start', responseLabel, 0, '');
+            showFeedback('너무 빨라요!', 'false-start');
+        }
+        return;
+    }
+
+    // 자극이 떠있는 화면일 때 정상 응답
+    if (currentPhaseState === 'stimulus' && awaitingResponse) {
+        if (allowedIds.includes(inputId)) {
+            awaitingResponse = false;
+            clearTimeout(trialTimeout);
+            const rt = Math.round(performance.now() - stimulusOnsetTime);
+            const isCorrect = (currentStimulus.id === inputId);
+            const accuracy = isCorrect ? 1 : 0;
+            const type = isCorrect ? 'hit' : 'miss';
+            
+            const pressedStim = block.stimuli.find(s => s.id === inputId);
+            const responseLabel = pressedStim ? pressedStim.icon : inputId;
+
+            recordResult(rt, type, responseLabel, accuracy, currentFixDur);
+
+            if (phase === 'practice') {
+                if (isCorrect) {
+                    showFeedback(`${rt} ms`, 'correct');
+                } else {
+                    showFeedback('오답!', 'false-start');
+                }
+            } else {
+                // 본 시행은 오답일 때만 피드백 노출
+                if (!isCorrect) {
+                     showFeedback('오답!', 'false-start');
+                } else {
+                     showArea('blank');
+                     setTimeout(nextTrial, CONFIG.interTrialInterval);
+                }
+            }
+        }
+    }
+}
+
+document.addEventListener('keydown', (e) => {
+    if (!screens.experiment.classList.contains('active')) return;
+    const block = BLOCKS[currentBlockIdx];
+    const matchedStim = block.stimuli.find(s => s.keys.includes(e.code));
+    if (matchedStim) {
+        e.preventDefault();
+        handleInput(matchedStim.id);
+    }
+});
+
+// ─── Results ─────────────────────────────────────────────────────
+function showResults() {
+    showScreen('result');
+
+    const hits = mainResults.filter(r => r.type === 'hit');
+    const misses = mainResults.filter(r => r.type === 'miss').length;
+    const falseStarts = mainResults.filter(r => r.type === 'false_start').length;
+    const tooSlows = mainResults.filter(r => r.type === 'too_slow').length;
+
+    const meanRT = hits.length ? Math.round(hits.reduce((s, r) => s + r.rt, 0) / hits.length) : '-';
+    const accuracy = mainResults.length ? Math.round((hits.length / mainResults.length) * 100) : 0;
+
+    els.resultSummary.innerHTML = `
+        <div class="stat-box">
+            <div class="stat-label">진행 레벨</div>
+            <div class="stat-value">레벨 ${currentBlockIdx + 1}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">평균 RT</div>
+            <div class="stat-value accent">${meanRT} ms</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">정확도</div>
+            <div class="stat-value success">${accuracy}%</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">오반응 / 무응답</div>
+            <div class="stat-value" style="font-size: 1.2rem; margin-top: 10px;">${misses + falseStarts + tooSlows}회</div>
+        </div>
+    `;
+
+    drawChart(hits);
+
+    if (currentBlockIdx < BLOCKS.length - 1) {
+        els.nextLevelBtn.textContent = '결과 보내고 다음 레벨가기';
+    } else {
+        els.nextLevelBtn.textContent = '결과 보내고 홈으로';
+    }
+}
+
+function drawChart(hits) {
+    if (window.myChart) { // 기존 차트가 있다면 파기
+        window.myChart.destroy();
+    }
+    const ctx = els.chart.getContext('2d');
+    window.myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: hits.map(r => r.trial),
+            datasets: [{
+                label: '반응시간 (ms)',
+                data: hits.map(r => r.rt),
+                borderColor: '#ff4d6d',
+                backgroundColor: 'rgba(255, 77, 109, 0.15)',
+                fill: true,
+                tension: 0.3,
+                pointBackgroundColor: hits.map(r => {
+                    if(r.condition === 1) return '#ff6b6b';
+                    if(r.condition === 2) return '#6b8cff';
+                    if(r.condition === 3) return '#6bff8c';
+                    return '#ffeb6b';
+                }),
+                pointBorderColor: '#fff',
+                pointBorderWidth: 1,
+                pointRadius: 4,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: (item) => `RT: ${item.raw} ms (블록 ${hits[item.dataIndex].condition})`,
+                    }
+                }
+            },
+            scales: {
+                x: { title: { display: true, text: '전체 시행', color: '#888' }, ticks: { color: '#888' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                y: { title: { display: true, text: '반응시간 (ms)', color: '#888' }, ticks: { color: '#888' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+            }
+        }
+    });
+}
+
+// ─── Excel Export ──────────────────────────────────────────────────
+function exportExcel() {
+    // 이제 nextLevelBtn에서 직접 전송하므로 사용하지 않음
+}
+
+// ─── Event Listeners ──────────────────────────────────────────────
+els.startBtn.addEventListener('click', () => {
+    const consentCb = document.getElementById('modal-consent-checkbox');
+    if (consentCb && !consentCb.checked) {
+        alert('실험을 시작하려면 \'자세히 보기\'를 눌러 연구 동의서를 확인하고 동의해주세요.');
+        return;
+    }
+
+    const id = els.participantId.value.trim();
+    if (!id) {
+        els.participantId.focus();
+        els.participantId.style.borderColor = 'var(--error)';
+        return;
+    }
+    participantId = id;
+    currentBlockIdx = parseInt(els.levelSelect.value) - 1;
+    allResults = [];
+    mainResults = [];
+    startBlock();
+});
+
+els.participantId.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') els.startBtn.click();
+});
+
+els.practiceBtn.addEventListener('click', () => {
+    phase = 'practice';
+    currentTrial = 0;
+    totalTrials = CONFIG.practiceTotalTrials;
+    trialSequence = generateSequence('practice');
+    showScreen('experiment');
+    startTrial();
+});
+
+els.mainBtn.addEventListener('click', () => {
+    phase = 'main';
+    currentTrial = 0;
+    totalTrials = CONFIG.mainTotalTrials;
+    trialSequence = generateSequence('main');
+    showScreen('experiment');
+    startTrial();
+});
+
+els.nextBlockBtn.addEventListener('click', () => {
+    currentBlockIdx++;
+    startBlock();
+});
+
+els.retryBtn.addEventListener('click', () => {
+    allResults = [];
+    mainResults = [];
+    startBlock();
+});
+
+els.nextLevelBtn.addEventListener('click', () => {
+    const btn = els.nextLevelBtn;
+    const originalText = btn.textContent;
+    btn.textContent = '데이터 전송 중... ⏳';
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+
+    google.script.run
+        .withSuccessHandler(function(res) {
+            btn.textContent = '전송 완료 ✅';
+            btn.style.opacity = '1';
+            
+            setTimeout(() => {
+                btn.disabled = false;
+                if (currentBlockIdx < BLOCKS.length - 1) {
+                    currentBlockIdx++;
+                    allResults = [];
+                    mainResults = [];
+                    startBlock();
+                } else {
+                    showScreen('id');
+                }
+            }, 800);
+        })
+        .withFailureHandler(function(err) {
+            alert('데이터 전송에 실패했습니다: ' + err.message + '\n네트워크 상태를 확인하고 다시 시도하세요.');
+            btn.textContent = originalText;
+            btn.disabled = false;
+            btn.style.opacity = '1';
+        })
+        .saveData(JSON.stringify(allResults));
+});
+
+// ─── Consent Modal Logic ──────────────────────────────────────────
+const openConsentBtn = document.getElementById('open-consent-btn');
+const closeConsentBtn = document.getElementById('close-modal-btn');
+const consentModal = document.getElementById('consent-modal');
+const consentCb = document.getElementById('modal-consent-checkbox');
+const consentStatusText = document.getElementById('consent-status-text');
+
+if (openConsentBtn && consentModal) {
+    openConsentBtn.addEventListener('click', () => {
+        consentModal.style.display = 'flex';
+    });
+}
+if (closeConsentBtn && consentModal) {
+    closeConsentBtn.addEventListener('click', () => {
+        consentModal.style.display = 'none';
+    });
+}
+if (consentCb && consentStatusText) {
+    consentCb.addEventListener('change', (e) => {
+        if (e.target.checked) {
+            consentStatusText.textContent = '✅ 동의 완료';
+            consentStatusText.style.color = 'var(--success)';
+        } else {
+            consentStatusText.textContent = '동의가 필요합니다.';
+            consentStatusText.style.color = 'var(--error)';
+        }
+    });
+}
+
+</script>
+</body>
+</html>
+

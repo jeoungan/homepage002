@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>천국의 계단</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="500" height="700"></canvas>
+        <div id="uiLayer">
+            <div id="startScreen" class="screen">
+                <h1>천국의 계단</h1>
+                <p>무한히 내려가는 계단!</p>
+                <div class="instructions">
+                    <p>◀ [A] 또는 [←] 버튼 : 왼쪽</p>
+                    <p>▶ [D] 또는 [→] 버튼 : 오른쪽</p>
+                </div>
+                <button id="startBtn">게임 시작</button>
+            </div>
+            
+            <div id="scoreDisplay" class="hud" style="display: none;">
+                점수: <span id="currentScore">0</span>
+            </div>
+            <div id="timeDisplay" class="hud" style="display: none; top: 90px; font-size: 2rem;">
+                시간: <span id="currentTime">0.0</span>s
+            </div>
+            
+            <div id="gameOverScreen" class="screen" style="display: none;">
+                <h1>게임 오버!</h1>
+                <p style="font-size: 2rem; margin-bottom: 15px;">내려간 계단: <span id="finalScore">0</span> 개</p>
+                <p style="font-size: 2rem; margin-bottom: 30px;">플레이 시간: <span id="finalTime">0.0</span> 초</p>
+                <button id="restartBtn">다시 시작</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

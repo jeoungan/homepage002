@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flanker Task</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', 'Malgun Gothic', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #fff;
+            overflow: hidden;
+        }
+
+        #container {
+            text-align: center;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1,
+        h2 {
+            margin-top: 0;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            margin-bottom: 15px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 17px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            word-break: keep-all;
+        }
+
+        #stimulus {
+            font-size: clamp(40px, 8vw, 100px);
+            letter-spacing: 5px;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            display: none;
+            position: absolute;
+            font-family: monospace;
+            white-space: nowrap;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .example-box {
+            text-align: left;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .example-box p {
+            margin: 8px 0;
+            font-size: 16px;
+        }
+
+        .results-stats {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .results-stats div {
+            margin: 12px 0;
+            font-size: 17px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+            padding-bottom: 8px;
+        }
+
+        .results-stats div:last-child {
+            border-bottom: none;
+        }
+
+        /* 모바일 터치 컨트롤 */
+        #touch-controls {
+            position: fixed;
+            bottom: 40px;
+            left: 0;
+            width: 100%;
+            padding: 0 40px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            z-index: 1000;
+        }
+
+        #touch-controls.hidden {
+            display: none !important;
+        }
+
+        .touch-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            font-size: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            user-select: none;
+            touch-action: manipulation;
+            /* 모바일 반응속도 최적화 */
+            cursor: pointer;
+        }
+
+        .touch-btn:active {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0.95);
+        }
+
+        /* PC 환경 등 큰 화면에서는 터치버튼 숨김 */
+        @media (min-width: 769px) {
+            #touch-controls {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="container">
+        <!-- 메인: 연습 시작 화면 -->
+        <div id="message" class="glass-panel">
+            <div class="badge">1단계: 과제 연습</div>
+            <h1>🎯 플랭커 인지 과제</h1>
+            <p>화면 중앙에 5개의 화살표가 나타납니다.<br>
+                <strong>"정가운데"</strong>에 있는 화살표가 가리키는 방향을 최대한 빠르고 정확하게 입력해주세요.
+            </p>
+
+            <div class="example-box">
+                <p>👉 <strong>일치 조건:</strong> <code>&lt;&lt;&lt;&lt;&lt;</code></p>
+                <p>👉 <strong>불일치 조건:</strong> <code>&lt;&lt;&gt;&lt;&lt;</code></p>
+                <p>👉 <strong>중립 조건:</strong> <code>■■&lt;■■</code> 또는 <code>■■&gt;■■</code></p>
+                <hr style="border: 0; border-top: 1px dashed rgba(255,255,255,0.2); margin: 15px 0;">
+                <p style="margin-bottom:5px;">👉 <strong>가운데 방향이 왼쪽(←)일 때:</strong> <code>⬅️ 기호</code>, <code>4</code>,
+                    <code>A</code> 중 하나 입력</p>
+                <p style="margin-top:0;">👉 <strong>가운데 방향이 오른쪽(→)일 때:</strong> <code>➡️ 기호</code>, <code>6</code>,
+                    <code>D</code> 중 하나 입력</p>
+            </div>
+
+            <div class="level-box"
+                style="text-align: left; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1);">
+                <p style="margin-top: 0; font-size: 16px;"><strong>🔥 난이도 (글자 간격) 선택:</strong></p>
+                <div style="font-size: 16px; display: flex; flex-direction: column; gap: 8px; margin-left: 5px;">
+                    <label style="cursor:pointer;"><input type="radio" name="level" value="0.5em" checked> 레벨 1 (기본, 간격
+                        1cm형)</label>
+                    <label style="cursor:pointer;"><input type="radio" name="level" value="0.25em"> 레벨 2 (조금 좁음, 간격
+                        0.5cm형)</label>
+                    <label style="cursor:pointer;"><input type="radio" name="level" value="0px"> 레벨 3 (아주 좁음, 간격
+                        없음)</label>
+                </div>
+            </div>
+            <div
+                style="text-align: left; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.1);">
+                <p style="margin-top: 0; font-size: 16px;"><strong>👤 참가자 정보:</strong></p>
+                <input type="text" id="participant-id" autocomplete="off" placeholder="참가자 ID를 입력하세요"
+                    style="width: 100%; padding: 12px; font-size: 16px; border-radius: 8px; border: none; outline: none; text-align: center;">
+            </div>
+
+            <p style="font-size: 15px; color:#ddd;">방법을 익히기 위해 <strong>연습 5회</strong>가 무작위로 먼저 주어집니다.</p>
+            <button id="start-practice-btn">연습 시작하기</button>
+        </div>
+
+        <!-- 본 과제 대기 화면 -->
+        <div id="interstitial" class="glass-panel hidden">
+            <div class="badge" style="background: rgba(74, 222, 128, 0.3);">2단계: 실제 과제 진행</div>
+            <h1>✅ 연습 완료</h1>
+            <p>과제 방법을 충분히 이해하셨나요?</p>
+            <p>이제부터 <strong>실제 통계에 기록되는 테스트(총 20회)</strong>가 진행됩니다.<br>최대한 빠르고 정확하게 방향키를 입력해 보세요!</p>
+            <p style="font-size: 14px; color: #ccc; margin-top: 15px;">👉 버튼을 클릭하거나 <strong>스페이스바</strong>를 누르세요.</p>
+            <button id="start-main-btn">실제 과제 시작하기</button>
+        </div>
+
+        <!-- 최종 결과 화면 -->
+        <div id="results" class="glass-panel hidden" style="max-width: 700px;">
+            <h1 style="color: #4ade80;">🎉 수고하셨습니다!</h1>
+            <p style="margin-bottom: 25px;">모든 과제가 성공적으로 종료되었습니다.<br>아래 버튼을 눌러 결과 데이터를 엑셀로 저장해 주세요.</p>
+
+            <div class="results-stats" id="stats-container">
+                <!-- Results will be injected here -->
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <button id="send-gas-btn" style="background: linear-gradient(90deg, #f59e0b, #ea580c);">결과 구글 시트로
+                    전송하기</button>
+                <button id="download-csv-btn" style="background: linear-gradient(90deg, #10b981, #047857);">결과 엑셀로 받기
+                    (CSV)</button>
+                <button onclick="location.reload()" style="background: rgba(255,255,255,0.2); box-shadow: none;">처음으로
+                    돌아가기</button>
+            </div>
+        </div>
+
+        <!-- 자극(화살표) 표시 영역 -->
+        <div id="stimulus"></div>
+
+        <!-- 모바일 전용 터치 버튼 -->
+        <div id="touch-controls" class="hidden">
+            <div class="touch-btn" id="btn-left">⬅️</div>
+            <div class="touch-btn" id="btn-right">➡️</div>
+        </div>
+    </div>
+
+    <script>
+        // 일치/불일치/중립 조건 세팅
+        const stimuliTypes = [
+            { text: '<<<<<', type: 'congruent', correctKey: 'ArrowLeft' },
+            { text: '>>>>>', type: 'congruent', correctKey: 'ArrowRight' },
+            { text: '<<><<', type: 'incongruent', correctKey: 'ArrowRight' },
+            { text: '>><>>', type: 'incongruent', correctKey: 'ArrowLeft' }
+        ];
+
+        const neutralStimuli = [
+            { text: '■■<■■', type: 'neutral', correctKey: 'ArrowLeft' },
+            { text: '■■>■■', type: 'neutral', correctKey: 'ArrowRight' }
+        ];
+
+        let trials = [];
+        let resultsData = [];
+        let startTime;
+        let isWaitingForResponse = false;
+        let currentPhase = 'practice'; // 'practice' 또는 'main'
+        let currentTrial = 0;
+        let stimulusTimeoutId;
+        let participantId = '';
+        let selectedLevel = '';
+
+        const messageEl = document.getElementById('message');
+        const interstitialEl = document.getElementById('interstitial');
+        const resultsEl = document.getElementById('results');
+        const stimulusEl = document.getElementById('stimulus');
+
+        document.getElementById('start-practice-btn').addEventListener('click', () => {
+            const idInput = document.getElementById('participant-id').value.trim();
+            if (!idInput) {
+                alert('참가자 ID를 먼저 입력해주세요!');
+                document.getElementById('participant-id').focus();
+                return;
+            }
+            participantId = idInput;
+
+            selectedLevel = document.querySelector('input[name="level"]:checked').value;
+            stimulusEl.style.letterSpacing = selectedLevel;
+
+            messageEl.classList.add('hidden');
+            startPhase('practice');
+        });
+
+        document.getElementById('start-main-btn').addEventListener('click', () => {
+            interstitialEl.classList.add('hidden');
+            startPhase('main');
+        });
+
+        // 시행 순서 무작위 혼합 (Fisher-Yates Shuffle)
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        // 조건별 반복 횟수에 맞게 전체 시행 배열 생성
+        function generatePhaseTrials(phase) {
+            let arr = [];
+            let counts = { congruent: 0, incongruent: 0, neutral: 0 };
+
+            if (phase === 'practice') {
+                counts.congruent = 2; // 총 2회
+                counts.incongruent = 2; // 총 2회
+                counts.neutral = 1; // 총 1회
+            } else {
+                counts.congruent = 8; // 총 8회
+                counts.incongruent = 8; // 총 8회
+                counts.neutral = 4; // 총 4회
+            }
+
+            // 일치 조건 배치
+            for (let i = 0; i < counts.congruent; i++) {
+                arr.push(i % 2 === 0 ? { ...stimuliTypes[0] } : { ...stimuliTypes[1] });
+            }
+
+            // 불일치 조건 배치
+            for (let i = 0; i < counts.incongruent; i++) {
+                arr.push(i % 2 === 0 ? { ...stimuliTypes[2] } : { ...stimuliTypes[3] });
+            }
+
+            // 중립 조건 배치
+            for (let i = 0; i < counts.neutral; i++) {
+                arr.push(i % 2 === 0 ? { ...neutralStimuli[0] } : { ...neutralStimuli[1] });
+            }
+
+            return shuffle(arr); // 완전히 무작위로 섞음
+        }
+
+        function startPhase(phase) {
+            currentPhase = phase;
+            currentTrial = 0;
+
+            if (phase === 'practice') {
+                trials = generatePhaseTrials('practice');
+                resultsData = []; // 데이터 수집 초기화
+            } else {
+                trials = generatePhaseTrials('main');
+            }
+
+            showFixation();
+        }
+
+        function showFixation() {
+            document.getElementById('touch-controls').classList.remove('hidden'); // 모바일 터치패드 출력
+
+            stimulusEl.classList.remove('hidden');
+            stimulusEl.style.display = 'block';
+            stimulusEl.style.color = '#fff';
+            stimulusEl.textContent = '+';
+
+            setTimeout(showStimulus, 800); // 십자가 800ms 유지
+        }
+
+        function showStimulus() {
+            const trial = trials[currentTrial];
+            stimulusEl.textContent = trial.text;
+            startTime = performance.now();
+            isWaitingForResponse = true;
+
+            // 1000ms 내 응답 없으면 다음으로 강제 스킵
+            stimulusTimeoutId = setTimeout(() => {
+                if (isWaitingForResponse) {
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function handleTimeout() {
+            isWaitingForResponse = false;
+
+            // 시간 초과 처리
+            resultsData.push({
+                participant_id: participantId,
+                timestamp: new Date().toISOString(),
+                condition: currentPhase === 'practice' ? '연습' : '실제',
+                level: selectedLevel,
+                trial: currentTrial + 1,
+                stimulus: trials[currentTrial].text,
+                type: trials[currentTrial].type,
+                correct_response: trials[currentTrial].correctKey === 'ArrowLeft' ? '←' : '→',
+                participant_response: 'Timeout',
+                correct: '-',
+                rt_ms: 1000,
+                missed: true
+            });
+
+            let feedbackDelay = 0;
+            if (currentPhase === 'practice') {
+                stimulusEl.style.color = '#888'; // 초과 시 흐려지는 피드백
+                feedbackDelay = 300;
+            } else {
+                stimulusEl.textContent = '';
+                feedbackDelay = 0;
+            }
+
+            setTimeout(() => {
+                stimulusEl.textContent = '';
+                currentTrial++;
+
+                if (currentTrial < trials.length) {
+                    setTimeout(showFixation, 500);
+                } else {
+                    endPhase();
+                }
+            }, feedbackDelay);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            // 연습 종료 후, 실제 과제 화면일 때 스페이스바로 넘어가기 지원
+            if (e.code === 'Space' && !interstitialEl.classList.contains('hidden')) {
+                e.preventDefault();
+                document.getElementById('start-main-btn').click();
+                return;
+            }
+
+            processInput(e.key);
+        });
+
+        function processInput(inputKey) {
+            if (!isWaitingForResponse) return;
+
+            const leftKeys = ['ArrowLeft', '4', 'a', 'A'];
+            const rightKeys = ['ArrowRight', '6', 'd', 'D'];
+
+            let normalizedKey = null;
+            if (leftKeys.includes(inputKey)) normalizedKey = 'ArrowLeft';
+            else if (rightKeys.includes(inputKey)) normalizedKey = 'ArrowRight';
+
+            if (normalizedKey) {
+                // 방향키/단축키/터치 입력 시 기본 타임아웃 취소
+                clearTimeout(stimulusTimeoutId);
+
+                const rt = performance.now() - startTime;
+                const trial = trials[currentTrial];
+                const isCorrect = (normalizedKey === trial.correctKey);
+
+                // 모든 과제 점수 기록 (연습, 실제 모두)
+                resultsData.push({
+                    participant_id: participantId,
+                    timestamp: new Date().toISOString(),
+                    condition: currentPhase === 'practice' ? '연습' : '실제',
+                    level: selectedLevel,
+                    trial: currentTrial + 1,
+                    stimulus: trial.text,
+                    type: trial.type,
+                    correct_response: trial.correctKey === 'ArrowLeft' ? '←' : '→',
+                    participant_response: normalizedKey === 'ArrowLeft' ? '←' : '→',
+                    correct: isCorrect ? 1 : 0,
+                    rt_ms: Math.round(rt),
+                    missed: false
+                });
+
+                isWaitingForResponse = false;
+
+                let feedbackDelay = 0;
+
+                if (currentPhase === 'practice') {
+                    // 연습 단계에서만 시각적 피드백 제공 (정답: 초록, 오답: 빨강)
+                    stimulusEl.style.color = isCorrect ? '#4ade80' : '#f87171';
+                    feedbackDelay = 300; // 피드백을 보여주기 위해 대기
+                } else {
+                    // 실제 과제에서는 피드백 없이 즉시 화면 비우기
+                    stimulusEl.textContent = '';
+                    feedbackDelay = 0;
+                }
+
+                // 지정된 딜레이 후 다음 준비
+                setTimeout(() => {
+                    stimulusEl.textContent = ''; // 화면 확실히 클리어
+                    currentTrial++;
+
+                    if (currentTrial < trials.length) {
+                        setTimeout(showFixation, 500); // 500ms 텀 뒤에 다음 trial 진행
+                    } else {
+                        endPhase();
+                    }
+                }, feedbackDelay);
+            }
+        }
+
+        function endPhase() {
+            document.getElementById('touch-controls').classList.add('hidden'); // 모바일 터치패드 숨김
+            stimulusEl.style.display = 'none';
+
+            if (currentPhase === 'practice') {
+                // 연습 종료 시, 실제 과제 대기 화면 오픈
+                interstitialEl.classList.remove('hidden');
+            } else {
+                // 실제 과제 종료 시, 결과 통계 화면 오픈
+                showResults();
+            }
+        }
+
+        function showResults() {
+            resultsEl.classList.remove('hidden');
+
+            // 정답 데이터 분석 (화면 결과 출력은 실제 과제로만 연산)
+            const mainData = resultsData.filter(r => r.condition === '실제');
+            const correctMainTrials = mainData.filter(r => r.correct === 1);
+            const accuracy = mainData.length > 0 ? (correctMainTrials.length / mainData.length) * 100 : 0;
+
+            const avgRt = correctMainTrials.length > 0
+                ? correctMainTrials.reduce((sum, r) => sum + r.rt_ms, 0) / correctMainTrials.length
+                : 0;
+
+            const congruentTrials = correctMainTrials.filter(r => r.type === 'congruent');
+            const incongruentTrials = correctMainTrials.filter(r => r.type === 'incongruent');
+            const neutralTrials = correctMainTrials.filter(r => r.type === 'neutral');
+
+            const congruentRt = congruentTrials.length > 0
+                ? congruentTrials.reduce((sum, r) => sum + r.rt_ms, 0) / congruentTrials.length
+                : 0;
+
+            const incongruentRt = incongruentTrials.length > 0
+                ? incongruentTrials.reduce((sum, r) => sum + r.rt_ms, 0) / incongruentTrials.length
+                : 0;
+
+            const neutralRt = neutralTrials.length > 0
+                ? neutralTrials.reduce((sum, r) => sum + r.rt_ms, 0) / neutralTrials.length
+                : 0;
+
+            const flankerEffect = incongruentRt - congruentRt;
+
+            document.getElementById('stats-container').innerHTML = `
+            <div><span style="color: #4ade80;">👤 참가자 ID:</span> <strong style="color: #4ade80;">${participantId}</strong></div>
+            <div><span>정답률 (Accuracy):</span> <strong>${accuracy.toFixed(1)}%</strong></div>
+            <div><span>일치 조건 반응시간:</span> <strong>${Math.round(congruentRt)} ms</strong></div>
+            <div><span>불일치 조건 반응시간:</span> <strong>${Math.round(incongruentRt)} ms</strong></div>
+            <div><span>중립 조건 반응시간:</span> <strong>${Math.round(neutralRt)} ms</strong></div>
+            <div style="color: #60a5fa;"><span>💡 플랭커 효과 (불일치 - 일치):</span> <strong>${Math.round(flankerEffect)} ms</strong></div>
+            <div><span style="color: #ddd; font-size: 14px;">평균 반응시간 (전체 정답 기준):</span> <strong style="color: #ddd; font-size: 14px;">${Math.round(avgRt)} ms</strong></div>
+        `;
+        }
+
+        // 결과 CSV 파일 다운로드 기능
+        document.getElementById('download-csv-btn').addEventListener('click', () => {
+            let csvContent = '\uFEFF'; // 한글 깨짐 방지용 BOM
+            csvContent += 'participant_id,timestamp,condition,level,trial,stimulus,stimulus_2,correct_response,participant_response,correct,rt_ms\n';
+
+            resultsData.forEach(row => {
+                const stimulus2Info = row.type === 'congruent' ? '일치' : (row.type === 'incongruent' ? '불일치' : '중립');
+                csvContent += `${row.participant_id},${row.timestamp},${row.condition},${row.level},${row.trial},${row.stimulus},${stimulus2Info},${row.correct_response},${row.participant_response},${row.correct},${row.rt_ms}\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `flanker_results_${participantId}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+        // 구글 시트로 결과 전송 기능
+        //... (kept below)
+        document.getElementById('send-gas-btn').addEventListener('click', () => {
+            // [주의] 여기에 배포한 Google Apps Script 웹앱 URL을 입력하세요.
+            const GAS_URL = 'https://script.google.com/macros/s/AKfycbx163bLcwbJ3LADtlpHFt49NiWX17mqsdxPWMyHHrdR1AosD23tvpyQYddOwQqG8VUW/exec';
+
+
+
+            const btn = document.getElementById('send-gas-btn');
+            btn.textContent = '전송 중... ⏳';
+            btn.disabled = true;
+
+            const payload = resultsData.map(row => ({
+                participant_id: row.participant_id,
+                timestamp: row.timestamp,
+                condition: row.condition,
+                level: row.level,
+                trial: row.trial,
+                stimulus: row.stimulus,
+                stimulus_2: row.type === 'congruent' ? '일치' : (row.type === 'incongruent' ? '불일치' : '중립'),
+                correct_response: row.correct_response,
+                participant_response: row.participant_response,
+                correct: row.correct,
+                rt_ms: row.rt_ms
+            }));
+
+            fetch(GAS_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload),
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8' // CORS 방지를 위해 text/plain 사용 권장
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result === 'success') {
+                        alert('정상적으로 시트에 저장되었습니다!');
+                        btn.textContent = '전송 완료 ✅';
+                        btn.style.background = 'linear-gradient(90deg, #4ade80, #16a34a)';
+                    } else {
+                        throw new Error(data.error || '알 수 없는 에러');
+                    }
+                })
+                .catch(err => {
+                    alert('전송에 실패했습니다: ' + err.message);
+                    btn.textContent = '다시 시도하기';
+                    btn.disabled = false;
+                });
+        });
+
+        // 터치 버튼 이벤트 바인딩
+        document.getElementById('btn-left').addEventListener('touchstart', (e) => { e.preventDefault(); processInput('ArrowLeft'); }, { passive: false });
+        document.getElementById('btn-right').addEventListener('touchstart', (e) => { e.preventDefault(); processInput('ArrowRight'); }, { passive: false });
+        // 마우스 클릭 (PC 확인용)
+        document.getElementById('btn-left').addEventListener('mousedown', (e) => { e.preventDefault(); processInput('ArrowLeft'); });
+        document.getElementById('btn-right').addEventListener('mousedown', (e) => { e.preventDefault(); processInput('ArrowRight'); });
+
+    </script>
+
+</body>
+
+</html>

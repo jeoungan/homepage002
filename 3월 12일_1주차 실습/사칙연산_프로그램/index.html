@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>암산 사칙연산 게임</title>
+    <meta name="description" content="랜덤으로 제시되는 사칙연산 문제를 암산으로 푸는 게임입니다.">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Menu Screen -->
+        <div id="menu-screen" class="screen active">
+            <h1>사칙연산 게임</h1>
+            <p>1 블록에 20문제가 출제됩니다.</p>
+            <div class="operation-grid">
+                <button class="op-btn" data-op="add">
+                    <span class="op-icon">+</span>
+                    <span>더하기</span>
+                </button>
+                <button class="op-btn" data-op="sub">
+                    <span class="op-icon">-</span>
+                    <span>빼기</span>
+                </button>
+                <button class="op-btn" data-op="mul">
+                    <span class="op-icon">×</span>
+                    <span>곱하기</span>
+                </button>
+                <button class="op-btn" data-op="div">
+                    <span class="op-icon">÷</span>
+                    <span>나누기</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <button id="back-btn" class="secondary-btn">← 중단하고 메뉴로</button>
+            <div class="game-board glass-panel">
+                <h2 id="operation-title">더하기</h2>
+                <div class="progress-text">문제 <span id="progress">1</span> / 20</div>
+                
+                <div class="problem-container">
+                    <span id="problem-text">8 + 7</span>
+                    <span class="equals-sign">=</span>
+                    <input type="number" id="answer-input" autocomplete="off" autofocus>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="submit-btn" class="primary-btn">확인 (Enter)</button>
+                </div>
+                
+                <div id="feedback" class="feedback"></div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="screen">
+            <div class="glass-panel" style="max-width: 600px; padding: 40px 30px;">
+                <h2 id="result-title">결과 요약</h2>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">오답률</div>
+                        <div class="stat-value" id="res-error-rate">0%</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">평균 시간</div>
+                        <div class="stat-value" id="res-avg-time">0s</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">최대 시간</div>
+                        <div class="stat-value" id="res-max-time">0s</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">최소 시간</div>
+                        <div class="stat-value" id="res-min-time">0s</div>
+                    </div>
+                </div>
+                
+                <h3 class="ranking-title">🏆 순위표 (<span id="ranking-op-name"></span>) Top 10</h3>
+                <div class="table-container">
+                    <table class="ranking-table">
+                        <thead>
+                            <tr>
+                                <th>순위</th>
+                                <th>플레이어 명(일시)</th>
+                                <th>오답률</th>
+                                <th>평균 시간</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ranking-tbody">
+                            <!-- JS injected -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <button id="home-btn" class="primary-btn" style="width: 100%;">처음으로 돌아가기</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

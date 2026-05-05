@@ -1,0 +1,654 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>인지실험 홈페이지</title>
+  <style>
+    :root {
+      --ink: #17201b;
+      --muted: #66736b;
+      --line: #d9e1d7;
+      --paper: #fbfcf7;
+      --soft: #eef4e8;
+      --green: #426b43;
+      --red: #d74838;
+      --gold: #dca940;
+      --blue: #346c92;
+      --white: #ffffff;
+      --shadow: 0 18px 50px rgba(23, 32, 27, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .hero {
+      min-height: 76vh;
+      display: grid;
+      align-items: end;
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(12, 22, 16, 0.82), rgba(12, 22, 16, 0.24) 54%, rgba(12, 22, 16, 0.42)),
+        url("./사진/blue_cat_hero.png") center center / cover no-repeat;
+      color: var(--white);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 120px;
+      background: linear-gradient(180deg, rgba(251, 252, 247, 0), var(--paper));
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 88px 0 92px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 18px;
+      color: rgba(255, 255, 255, 0.84);
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 28px;
+      height: 2px;
+      background: var(--gold);
+    }
+
+    h1 {
+      max-width: 720px;
+      margin: 0;
+      font-size: 4rem;
+      line-height: 1.06;
+      font-weight: 900;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .hero-copy {
+      max-width: 620px;
+      margin: 22px 0 0;
+      color: rgba(255, 255, 255, 0.86);
+      font-size: 1.13rem;
+      line-height: 1.7;
+      word-break: keep-all;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 30px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 18px;
+      border: 1px solid rgba(255, 255, 255, 0.36);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--white);
+      font-weight: 800;
+      backdrop-filter: blur(10px);
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.7);
+    }
+
+    .button.primary {
+      border-color: var(--gold);
+      background: var(--gold);
+      color: #21160a;
+    }
+
+    main {
+      position: relative;
+      z-index: 2;
+    }
+
+    .shell {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .overview {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: -52px;
+      margin-bottom: 54px;
+    }
+
+    .metric {
+      min-height: 104px;
+      padding: 18px;
+      border: 1px solid rgba(217, 225, 215, 0.9);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: var(--shadow);
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 2rem;
+      line-height: 1;
+      color: var(--green);
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 10px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(240px, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      margin: 0 0 12px;
+      font-size: 2rem;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .section-lead {
+      max-width: 680px;
+      margin: 0 0 28px;
+      color: var(--muted);
+      line-height: 1.7;
+      word-break: keep-all;
+    }
+
+    .search {
+      width: 100%;
+      min-height: 48px;
+      padding: 0 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      color: var(--ink);
+      font: inherit;
+      box-shadow: 0 8px 22px rgba(23, 32, 27, 0.06);
+    }
+
+    .search:focus {
+      outline: 3px solid rgba(220, 169, 64, 0.34);
+      border-color: var(--gold);
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .filter {
+      min-height: 40px;
+      padding: 0 13px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      color: var(--muted);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .filter.active {
+      border-color: var(--green);
+      background: var(--green);
+      color: var(--white);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 64px;
+    }
+
+    .experiment {
+      display: flex;
+      flex-direction: column;
+      min-height: 250px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      box-shadow: 0 12px 34px rgba(23, 32, 27, 0.08);
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .experiment:hover {
+      transform: translateY(-4px);
+      border-color: rgba(66, 107, 67, 0.5);
+      box-shadow: 0 18px 42px rgba(23, 32, 27, 0.13);
+    }
+
+    @media (min-width: 921px) {
+      .grid.is-default .experiment.balance-right {
+        grid-column: 3;
+      }
+
+      .grid.is-default .experiment.balance-center {
+        grid-column: 2;
+      }
+    }
+
+    .experiment-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .date {
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    .tag {
+      flex: 0 0 auto;
+      padding: 5px 9px;
+      border-radius: 999px;
+      color: var(--white);
+      font-size: 0.78rem;
+      font-weight: 900;
+      background: var(--green);
+    }
+
+    .tag.game {
+      background: var(--red);
+    }
+
+    .tag.rt {
+      background: var(--blue);
+    }
+
+    .tag.data {
+      background: #7a5b25;
+    }
+
+    .experiment h3 {
+      margin: 0;
+      font-size: 1.35rem;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .experiment p {
+      margin: 14px 0 24px;
+      color: var(--muted);
+      line-height: 1.65;
+      word-break: keep-all;
+    }
+
+    .open-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      width: 100%;
+      min-height: 44px;
+      margin-top: auto;
+      padding: 0 13px 0 15px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--green);
+      font-weight: 900;
+      transition: background 160ms ease, border-color 160ms ease;
+    }
+
+    .open-link::after {
+      content: ">";
+      font-family: Consolas, monospace;
+      font-weight: 900;
+    }
+
+    .open-link:hover {
+      background: var(--soft);
+      border-color: rgba(66, 107, 67, 0.5);
+    }
+
+    .empty {
+      display: none;
+      margin: 10px 0 56px;
+      padding: 26px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      background: var(--white);
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .empty.show {
+      display: block;
+    }
+
+    footer {
+      padding: 30px 0 46px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 920px) {
+      h1 {
+        font-size: 3rem;
+      }
+
+      .overview,
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .filters {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .hero {
+        min-height: 70vh;
+        background-position: 58% center;
+      }
+
+      .hero-inner,
+      .shell {
+        width: min(100% - 28px, 1120px);
+      }
+
+      .hero-inner {
+        padding: 74px 0 78px;
+      }
+
+      h1 {
+        font-size: 2.35rem;
+      }
+
+      .hero-copy {
+        font-size: 1rem;
+      }
+
+      .overview,
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .overview {
+        margin-top: -36px;
+      }
+
+      .experiment {
+        min-height: 220px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">2026 바헬 인지실험</p>
+      <h1>인지실험 홈페이지</h1>
+      <p class="hero-copy">
+        반응시간, Stroop, 미로, Flanker 과제를 한 곳에서 실행할 수 있도록 정리한 수업용 실험 허브입니다.
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="#experiments">실험 보기</a>
+        <a class="button" id="random-game" href="#random-game">무작위 참여</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell overview" aria-label="요약">
+      <div class="metric">
+        <strong>10</strong>
+        <span>웹 실험</span>
+      </div>
+      <div class="metric">
+        <strong>5</strong>
+        <span>수업 주차</span>
+      </div>
+      <div class="metric">
+        <strong>4</strong>
+        <span>인지 과제 유형</span>
+      </div>
+      <div class="metric">
+        <strong>공개</strong>
+        <span>개인정보 제외</span>
+      </div>
+    </section>
+
+    <section class="shell" id="experiments">
+      <h2 class="section-title">실험 모음</h2>
+      <p class="section-lead">
+        각 항목을 누르면 해당 실험 페이지가 열립니다. 일부 과제는 참가자 ID 입력, 결과 저장, 그래프 확인 기능을 포함합니다.
+      </p>
+
+      <div class="toolbar">
+        <input class="search" id="search" type="search" placeholder="Stroop, RT, Maze, Flanker" aria-label="실험 검색">
+        <div class="filters" aria-label="실험 유형 필터">
+          <button class="filter active" type="button" data-filter="all">전체</button>
+          <button class="filter" type="button" data-filter="experiment">실험</button>
+          <button class="filter" type="button" data-filter="rt">RT</button>
+          <button class="filter" type="button" data-filter="game">게임</button>
+        </div>
+      </div>
+
+      <div class="grid is-default" id="grid">
+        <article class="experiment" data-type="experiment" data-keywords="stroop 한영 색상 간섭 3월 12일">
+          <div class="experiment-top">
+            <span class="date">3월 12일</span>
+            <span class="tag">실험</span>
+          </div>
+          <h3>한영 Stroop Task</h3>
+          <p>한국어와 영어 색상 단어를 활용해 색상-의미 간섭을 측정하는 Stroop 과제입니다.</p>
+          <a class="open-link" href="./3월 12일_1주차 실습/한영 stroop/index.html">열기</a>
+        </article>
+
+        <article class="experiment" data-type="game" data-keywords="사칙연산 계산 게임 덧셈 뺄셈 곱셈 나눗셈">
+          <div class="experiment-top">
+            <span class="date">3월 12일</span>
+            <span class="tag game">게임</span>
+          </div>
+          <h3>사칙연산 프로그램</h3>
+          <p>제한된 블록 안에서 산술 문제를 풀고 정확도와 풀이 시간을 확인하는 과제입니다.</p>
+          <a class="open-link" href="./3월 12일_1주차 실습/사칙연산_프로그램/index.html">열기</a>
+        </article>
+
+        <article class="experiment" data-type="game" data-keywords="천국의 계단 계단 게임 반응">
+          <div class="experiment-top">
+            <span class="date">3월 12일</span>
+            <span class="tag game">게임</span>
+          </div>
+          <h3>천국의 계단</h3>
+          <p>좌우 이동 선택을 빠르게 반복하며 점수와 플레이 시간을 기록하는 캔버스 게임입니다.</p>
+          <a class="open-link" href="./3월 12일_1주차 실습/천국의 계단/index.html">열기</a>
+        </article>
+
+        <article class="experiment" data-type="game" data-keywords="미로찾기 maze 1주차">
+          <div class="experiment-top">
+            <span class="date">3월 12일</span>
+            <span class="tag game">게임</span>
+          </div>
+          <h3>미로찾기</h3>
+          <p>캔버스 기반 미로를 탐색하는 초기 버전의 공간 탐색 과제입니다.</p>
+          <a class="open-link" href="./3월 12일_1주차 실습/미로찾기/index.html">열기</a>
+        </article>
+
+        <article class="experiment" data-type="experiment" data-keywords="stroop 3월 20일 색상 단어">
+          <div class="experiment-top">
+            <span class="date">3월 20일</span>
+            <span class="tag">실험</span>
+          </div>
+          <h3>Stroop Task</h3>
+          <p>색상 단어와 실제 표시 색상을 비교해 반응시간과 오류율을 수집하는 실험입니다.</p>
+          <a class="open-link" href="./3월 20일_stroop/Index.html">열기</a>
+        </article>
+
+        <article class="experiment" data-type="rt" data-keywords="simple rt reaction time 단순 반응시간 4월 2일">
+          <div class="experiment-top">
+            <span class="date">4월 2일</span>
+            <span class="tag rt">RT</span>
+          </div>
+          <h3>Simple RT Task</h3>
+          <p>자극이 나타나는 순간 스페이스바로 반응해 단순 반응시간을 측정하는 과제입니다.</p>
+          <a class="open-link" href="./4월 2일/simple_rt/index.html">열기</a>
+        </article>
+
+        <article class="experiment" data-type="rt" data-keywords="choice rt 선택 반응시간 4월 2일">
+          <div class="experiment-top">
+            <span class="date">4월 2일</span>
+            <span class="tag rt">RT</span>
+          </div>
+          <h3>Choice RT Task</h3>
+          <p>여러 자극 중 맞는 선택지를 눌러 선택 반응시간과 정확도를 확인하는 과제입니다.</p>
+          <a class="open-link" href="./4월 2일/choise RT/index.html">열기</a>
+        </article>
+
+        <article class="experiment" data-type="game" data-keywords="neon maze 미로 4월 9일">
+          <div class="experiment-top">
+            <span class="date">4월 9일</span>
+            <span class="tag game">게임</span>
+          </div>
+          <h3>Neon Maze</h3>
+          <p>난이도를 선택하고 출구를 찾는 미로 과제입니다. 시간과 단계 진행을 확인할 수 있습니다.</p>
+          <a class="open-link" href="./4월 9일_maze/index.html">열기</a>
+        </article>
+
+        <article class="experiment" data-type="rt" data-keywords="10sec challenge 10초 챌린지 타이밍">
+          <div class="experiment-top">
+            <span class="date">4월 9일</span>
+            <span class="tag rt">RT</span>
+          </div>
+          <h3>10sec Challenge</h3>
+          <p>10초에 가깝게 멈추는 타이밍 판단 과제입니다. 짧은 집중과 시간 감각을 측정합니다.</p>
+          <a class="open-link" href="./10sec_challenge/index.html">열기</a>
+        </article>
+
+        <article class="experiment balance-center" data-type="experiment" data-keywords="flanker task 4월 16일 주의 억제">
+          <div class="experiment-top">
+            <span class="date">4월 16일</span>
+            <span class="tag">실험</span>
+          </div>
+          <h3>Flanker Task</h3>
+          <p>중앙 목표 자극과 주변 방해 자극을 구분해 선택적 주의와 억제 기능을 살펴보는 과제입니다.</p>
+          <a class="open-link" href="./4월 16일/flanker_task/index.html">열기</a>
+        </article>
+      </div>
+
+      <div class="empty" id="empty">검색 결과가 없습니다.</div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell">바헬 인지실험</div>
+  </footer>
+
+  <script>
+    const searchInput = document.querySelector("#search");
+    const randomGameButton = document.querySelector("#random-game");
+    const filters = document.querySelectorAll(".filter");
+    const grid = document.querySelector("#grid");
+    const cards = document.querySelectorAll(".experiment");
+    const empty = document.querySelector("#empty");
+    let activeFilter = "all";
+
+    function applyFilters() {
+      const query = searchInput.value.trim().toLowerCase();
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const type = card.dataset.type;
+        const text = `${card.textContent} ${card.dataset.keywords}`.toLowerCase();
+        const typeMatches = activeFilter === "all" || type === activeFilter;
+        const queryMatches = !query || text.includes(query);
+        const visible = typeMatches && queryMatches;
+
+        card.style.display = visible ? "" : "none";
+        if (visible) visibleCount += 1;
+      });
+
+      empty.classList.toggle("show", visibleCount === 0);
+      grid.classList.toggle("is-default", activeFilter === "all" && !query);
+    }
+
+    filters.forEach((button) => {
+      button.addEventListener("click", () => {
+        filters.forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+        activeFilter = button.dataset.filter;
+        applyFilters();
+      });
+    });
+
+    searchInput.addEventListener("input", applyFilters);
+
+    applyFilters();
+
+    randomGameButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      const runnableLinks = [...document.querySelectorAll('.experiment:not([data-type="data"]) .open-link')];
+      const selectedLink = runnableLinks[Math.floor(Math.random() * runnableLinks.length)];
+
+      if (selectedLink) {
+        window.location.href = selectedLink.href;
+      }
+    });
+  </script>
+</body>
+</html>
+
